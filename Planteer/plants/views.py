@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-from .models import Plant
+from .models import Plant, Country
 # Bonus
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
@@ -37,12 +37,18 @@ def create_plant_view(request: HttpRequest) -> HttpResponse:
             image=request.FILES["image"], 
             category=request.POST.get("category"),
             is_edible=True if request.POST.get("is_edible") == "on" else False,
+            
         ) 
         new_plant.save()
-
+        
+        native_to_ids = request.POST.getlist("native_to")
+        new_plant.native_to.set(Country.objects.filter(id__in=native_to_ids))
+        
         return redirect("main:index_view")  
-
-    return render(request, "plants/create.html")
+    
+    countries = Country.objects.all()
+    print(countries)
+    return render(request, "plants/create.html", {"countries": countries})
 
 
 def plant_update_view(request:HttpRequest, plant_id:int):

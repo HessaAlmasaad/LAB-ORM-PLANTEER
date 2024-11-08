@@ -1,0 +1,98 @@
+/* General Page Styling */
+body {
+    background-color: #FCFBF1;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: #333; 
+}
+/* Form Container Styling */
+form {
+    background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+/* Form Elements Styling */
+input[type="text"],
+textarea,
+select,
+input[type="file"] {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+input[type="submit"] {
+    background-color: #4CAF50; /* Green button */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+/* Checkbox Styling */
+.form-check label {
+    display: flex;
+    align-items: center;
+}
+.form-check input[type="checkbox"] {
+    margin-right: 5px;
+}
+/* Title Styling */
+h1 {
+    font-size: 2.5rem;
+    color:#2B4700; /* Green color for the title */
+}
+/* Container Styling for Centering Content */
+.row {
+    margin-top: 50px;
+}
+/* Animation */
+.fade-in {
+    animation: fadeIn 1.5s ease-in;
+}
+.slide-in-left {
+    animation: slideInLeft 1s ease-in;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-50%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+/* Image Styling */
+.side-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px; 
+    margin-left: 20px; /* Adds spacing between form and image */
+}
+/* For responsive layout adjustments */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+    .side-image {
+        margin: 20px 0 0;
+    }
+}

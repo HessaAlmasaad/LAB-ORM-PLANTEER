@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 
+class Country(models.Model):
+    name = models.CharField(max_length=100)
+    
 class Plant(models.Model):
     class CategoryChoices(models.TextChoices):
         TREE = 'tree', 'Tree'
@@ -21,5 +24,6 @@ class Plant(models.Model):
     )
     is_edible = models.BooleanField(default=True)
     created_at= models.DateTimeField(auto_now_add=True)
+    native_to = models.ManyToManyField(Country, blank=True)  # New field for countries
     
     
