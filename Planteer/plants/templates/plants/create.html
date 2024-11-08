@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %} Create Plant | Planteer {% endblock %}
+{% block content %}
+
+<h1 class="text-center mb-4 fade-in">Create Plant</h1> 
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6 slide-in-left">
+                <form class="d-flex flex-column gap-3" action="{% url 'plants:create_plant_view' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" placeholder="Name" name="name" class="form-control" required />
+                    <textarea placeholder="About" name="about" class="form-control" rows="4" required></textarea>
+                    <input type="text" placeholder="Used For" name="used_for" class="form-control" required />
+                    <!-- Category Dropdown Field -->
+            <select name="category" class="form-control" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="tree">Tree</option>
+                <option value="fruit">Fruit</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="flower">Flower</option>
+                <option value="herbs">Herbs</option>
+            </select>
+                    <input type="file" name="image" class="form-control"/>
+                    <div class="form-check">
+                        <label>
+                            <input type="checkbox" name="is_edible" id="isEdibleCheckbox" {% if new_plant.is_edible %}checked{% endif %} onchange="toggleEdibleText()">
+                            Is Edible? <span id="edibleStatus">{% if new_plant.is_edible %}Yes{% else %}No{% endif %}</span>
+                        </label>
+                    </div>
+                    <input type="submit" value="Create Plant" class="btn btn-primary btn-block" />
+                </form>
+            </div>
+        </div>
+        <script>
+            function toggleEdibleText() {
+            const checkbox = document.getElementById('isEdibleCheckbox');
+            const status = document.getElementById('edibleStatus');
+            status.textContent = checkbox.checked ? 'Yes' : 'No';
+            }
+        </script>
+{% endblock %}
+

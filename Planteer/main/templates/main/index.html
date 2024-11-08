@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Home | Planteer{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<section class="hero-section bg-light p-5 rounded-3 mb-5 text-center hero-background">
+    <div class="bg-white bg-opacity-75 p-4 rounded">
+        <h1 class="display-4">Life in love with plants</h1>
+        <p class="lead">Plant Database For Plant Lovers</p>
+        <form action="/search" method="GET" class="d-flex justify-content-center mt-4">
+            <input type="text" name="q" class="form-control w-50 rounded-pill me-2" placeholder="Search for Plant...">
+            <button type="submit" class="btn btn-success rounded-pill">Search</button>
+        </form>
+    </div>
+</section>
+<section class="plants-section my-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2 class="plants-title">Plants</h2>
+                <p class="plants-subtitle">Learn more about plants</p>
+            </div>
+            <a href="{% url 'plants:all_plants_view' %}" class="more-link text-decoration-none">More &rarr;</a>
+        </div>
+        <div class="row g-4">
+            {% for plant in plants %}
+                <div class="col-md-4">
+                    <div class="plant-card card shadow-sm border-0">
+                        <img src="{{ plant.image.url }}" class="card-img-top" alt="{{ plant.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">{{ plant.name }}</h5>
+                            <p class="card-text text-muted">Brief about plant<br><span class="fw-bold">{{ plant.category }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
