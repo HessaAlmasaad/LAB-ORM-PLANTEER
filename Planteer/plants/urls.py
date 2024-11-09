@@ -8,7 +8,7 @@ app_name="plants"
 urlpatterns = [
     
     path("plants/all/", views.all_plants_view, name="all_plants_view"),
-    path("plants/<plant_id>/detail/", views.plant_detail_view, name="plant_detail_view"),
+    path("detail/<plant_id>/", views.plant_detail_view, name="plant_detail_view"),
     path('plants/new/', views.create_plant_view, name='create_plant_view'),
     path("plants/<plant_id>/update/", views.plant_update_view, name="plant_update_view"),
     path("plants/<plant_id>/delete/", views.plant_delete_view, name="plant_delete_view"),

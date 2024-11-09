@@ -4,33 +4,31 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <h1 class="text-center mb-4 fade-in">Detail of {{ plant.name }} Plant</h1> 
-<div class="row">
-    <div class="col">
-        <div class="d-flex flex-column gap-2">
-            <div class="d-flex justify-content-between">
-                <h5>{{ plant.category }}</h5>
-                <h6>{{ plant.created_at }}</h6>
-            </div>
-            <div>
-                <strong>Native To:</strong> 
-                {% for country in plant.native_to.all %}
-                    {{ country.name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    Not specified
-                {% endfor %}
-            </div>
-            <img src="{{ plant.image.url }}" class="w-50" alt="{{ plant.name }}" />
-            <div class="d-flex justify-content-end gap-2">
-                <a href="{% url 'plants:plant_update_view' plant.id %}" class="btn btn-primary">Update</a>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
-            </div>
-            <p>{{ plant.about }}</p>
-            <div>
-                <strong>Is Edible:</strong> {{ plant.is_edible }}
-            </div>
-            <div>
-                <strong>Used For:</strong> {{ plant.used_for }}
-            </div>
+<div class="row align-items-start">
+    <div class="col-md-6">
+        <img src="{{ plant.image.url }}" class="img-fluid rounded shadow" alt="{{ plant.name }}" style="max-width: 100%; height: auto;">
+    </div>
+    <div class="col-md-6">
+        <h2 class="plant-title">{{ plant.name }}</h2>
+        <h5 class="plant-category text-muted">{{ plant.category }}</h5>
+        <p class="plant-description">{{ plant.about }}</p>
+        <div class="plant-native">
+            <strong>Native To:</strong> 
+            {% for country in plant.native_to.all %}
+                {{ country.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                Not specified
+            {% endfor %}
+        </div>
+        <div class="plant-edible mt-2">
+            <strong>Is Edible:</strong> {{ plant.is_edible|yesno:"Yes,No" }}
+        </div>
+        <div class="plant-used-for mt-2">
+            <strong>Used For:</strong> {{ plant.used_for }}
+        </div>
+        <div class="d-flex mt-4">
+            <a href="{% url 'plants:plant_update_view' plant.id %}" class="btn btn-primary me-2">Update</a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
         </div>
     </div>
 </div>
@@ -51,6 +49,25 @@
                 <a href="{% url 'plants:plant_delete_view' plant.id %}" class="btn btn-danger">Delete</a>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h3 class="related-plants-title">Related Plants</h3>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+        {% for related_plant in related_plants %}
+            <div class="col">
+                <div class="card shadow-sm border-0 h-100">
+                    <img src="{{ related_plant.image.url }}" class="card-img-top" alt="{{ related_plant.name }}" style="width: 100%; height: 150px; object-fit: cover;">
+                    <div class="card-body">
+                        <a href="{% url 'plants:plant_detail_view' related_plant.id %}">
+                            <h5 class="card-title mb-1">{{ related_plant.name }}</h5>
+                        </a>
+                        <p class="card-text text-muted">Brief about plant<br><span class="fw-bold">{{ related_plant.category }}</span></p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
