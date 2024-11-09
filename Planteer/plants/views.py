@@ -44,21 +44,28 @@ def plant_detail_view(request, plant_id):
     })
 
     
-def plant_update_view(request:HttpRequest, plant_id:int):
-
+def plant_update_view(request: HttpRequest, plant_id: int):
     plant = Plant.objects.get(pk=plant_id)
 
     if request.method == "POST":
         plant.name = request.POST["name"]
         plant.about = request.POST["about"]
         plant.used_for = request.POST["used_for"]
-        if "plant" in request.FILES: plant.image = request.FILES["image"]
-        plant.category=request.POST["category"]
+        if "image" in request.FILES:
+            plant.image = request.FILES["image"]
+        plant.category = request.POST["category"]
         plant.is_edible = request.POST.get('is_edible', 'off') == 'on'
         plant.save()
-        
+
+        # Update native_to field (assuming it's a many-to-many relationship)
+        native_to_ids = request.POST.getlist("native_to")
+        plant.native_to.set(native_to_ids)
+
         return redirect("plants:plant_detail_view", plant_id=plant_id)
-    return render(request, "plants/plant_update.html", {"plant":plant})
+
+    countries = Country.objects.all()  # Assuming you have a Country model to list all options
+    return render(request, "plants/plant_update.html", {"plant": plant, "countries": countries})
+
 
 def plant_delete_view(request:HttpRequest, plant_id:int):
 

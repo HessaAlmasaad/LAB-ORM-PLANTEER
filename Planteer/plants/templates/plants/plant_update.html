@@ -1,6 +1,64 @@
 {% extends 'main/base.html' %}
 {% load static %}
-{% block content %}
 {% block title %} Update Plant | Planteer {% endblock %}
-<h1>Plant Update Pass</h1>
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<h1 class="text-center mb-4 fade-in">Update Plant</h1> 
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-6 slide-in-left">
+        <form class="d-flex flex-column gap-3" action="{% url 'plants:plant_update_view' plant.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Manually added form fields -->
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ plant.name }}" required minlength="5" maxlength="512">
+
+            <label for="about">About:</label>
+            <textarea id="about" name="about" class="form-control" rows="4" required>{{ plant.about }}</textarea>
+
+            <label for="used_for">Used For:</label>
+            <input type="text" id="used_for" name="used_for" class="form-control" value="{{ plant.used_for }}" required>
+
+            <label for="category">Category:</label>
+            <select id="category" name="category" class="form-control" required>
+                <option value="tree" {% if plant.category == "tree" %}selected{% endif %}>Tree</option>
+                <option value="fruit" {% if plant.category == "fruit" %}selected{% endif %}>Fruit</option>
+                <option value="vegetables" {% if plant.category == "vegetables" %}selected{% endif %}>Vegetables</option>
+                <option value="flower" {% if plant.category == "flower" %}selected{% endif %}>Flower</option>
+                <option value="herbs" {% if plant.category == "herbs" %}selected{% endif %}>Herbs</option>
+            </select>
+            <label for="native_to">Native To:</label>
+            <select name="native_to" id="native_to" class="form-control select2-multi" multiple>
+                {% for country in countries %}
+                    <option value="{{ country.id }}" {% if country in plant.native_to.all %}selected{% endif %}>
+                        {{ country.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image" class="form-control" accept="image/*">
+            {% if plant.image %}
+    <p>Current Image:</p>
+    <img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="img-thumbnail" style="width: 150px; height: auto;">
+
+{% endif %}
+
+
+            <div class="form-check">
+                <label>
+                    <input type="checkbox" name="is_edible" id="isEdibleCheckbox" {% if plant.is_edible %}checked{% endif %}>
+                    Is Edible?
+                </label>
+            </div>
+
+            <input type="submit" value="Update Plant" class="btn btn-primary btn-block" />
+        </form>
+    </div>
+    <div class="col-md-4 slide-in-right">
+        <img src="{% static 'images/Cactus.jpg' %}" alt="Plant Image" class="side-image" style="width:100%; height:auto; border-radius:8px;"/>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 {% endblock %}
