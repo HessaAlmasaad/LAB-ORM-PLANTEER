@@ -10,24 +10,6 @@ from django.core.paginator import Paginator
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-
-def all_plants_view(request:HttpRequest):
-    
-    plant_list = Plant.objects.all()
-    paginator = Paginator(plant_list, 10)  # Show 10 plants per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, "plants/all_plants.html", {'page_obj': page_obj})
-
-
-def plant_detail_view(request, plant_id):
-    try:
-        plant = get_object_or_404(Plant, id=plant_id)
-    except Http404:
-        return render(request, 'plants/404.html', status=404)
-    return render(request, 'plants/plant_detail.html', {"plant": plant})
-
-
 def create_plant_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         new_plant = Plant(
@@ -50,7 +32,20 @@ def create_plant_view(request: HttpRequest) -> HttpResponse:
     print(countries)
     return render(request, "plants/create.html", {"countries": countries})
 
-
+def plant_detail_view(request, plant_id):
+    try:
+        plant = get_object_or_404(Plant, id=plant_id)
+    except Http404:
+        return render(request, 'plants/404.html', status=404)
+    
+    # Fetch related plants based on the same category, excluding the current plant
+    related_plants = Plant.objects.filter(category=plant.category).exclude(id=plant.id)[:4]  
+    
+    return render(request, 'plants/plant_detail.html', {
+        "plant": plant,
+        "related_plants": related_plants
+    })
+    
 def plant_update_view(request:HttpRequest, plant_id:int):
 
     plant = Plant.objects.get(pk=plant_id)
@@ -67,7 +62,6 @@ def plant_update_view(request:HttpRequest, plant_id:int):
         return redirect("plants:plant_detail_view", plant_id=plant_id)
     return render(request, "plants/plant_update.html", {"plant":plant})
 
-
 def plant_delete_view(request:HttpRequest, plant_id:int):
 
     plant = Plant.objects.get(pk=plant_id)
@@ -75,13 +69,41 @@ def plant_delete_view(request:HttpRequest, plant_id:int):
 
     return redirect("main:index_view")
 
+def custom_404_view(request, exception):
+    return render(request, "posts/404.html", status=404)
+
+def all_plants_view(request):
+    # Get filter parameters from request
+    category_filter = request.GET.get('category')
+    is_edible_filter = request.GET.get('is_edible')
+
+    plant_list = Plant.objects.all()
+
+    if category_filter:
+        plant_list = plant_list.filter(category=category_filter)
+    if is_edible_filter:
+        # Convert is_edible_filter to boolean (expected input "true" or "false")
+        is_edible_bool = is_edible_filter.lower() == 'true'
+        plant_list = plant_list.filter(is_edible=is_edible_bool)
+
+    plant_list = plant_list.order_by('name') 
+
+    # Pagination
+    paginator = Paginator(plant_list, 10)  # Show 10 plants per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "plants/all_plants.html", {
+        'page_obj': page_obj,
+        'category_filter': category_filter,
+        'is_edible_filter': is_edible_filter,
+    })
 
 # plant_search_view
 
 
 
-def custom_404_view(request, exception):
-    return render(request, "posts/404.html", status=404)
+
 
 
 

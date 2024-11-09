@@ -1,6 +1,57 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% block title %}Plant Detail | Planteer{% endblock %}
 {% block content %}
-{% block title %} Plant Detail | Planteer {% endblock %}
-<h1>Plant Detail Pass</h1>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<h1 class="text-center mb-4 fade-in">Detail of {{ plant.name }} Plant</h1> 
+<div class="row">
+    <div class="col">
+        <div class="d-flex flex-column gap-2">
+            <div class="d-flex justify-content-between">
+                <h5>{{ plant.category }}</h5>
+                <h6>{{ plant.created_at }}</h6>
+            </div>
+            <div>
+                <strong>Native To:</strong> 
+                {% for country in plant.native_to.all %}
+                    {{ country.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Not specified
+                {% endfor %}
+            </div>
+            <img src="{{ plant.image.url }}" class="w-50" alt="{{ plant.name }}" />
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'plants:plant_update_view' plant.id %}" class="btn btn-primary">Update</a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+            </div>
+            <p>{{ plant.about }}</p>
+            <div>
+                <strong>Is Edible:</strong> {{ plant.is_edible }}
+            </div>
+            <div>
+                <strong>Used For:</strong> {{ plant.used_for }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Plant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete {{ plant.name }}?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'plants:plant_delete_view' plant.id %}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
