@@ -7,10 +7,14 @@
     <div class="bg-white bg-opacity-75 p-4 rounded">
         <h1 class="display-4">Life in love with plants</h1>
         <p class="lead">Plant Database For Plant Lovers</p>
-        <form action="/search" method="GET" class="d-flex justify-content-center mt-4">
-            <input type="text" name="q" class="form-control w-50 rounded-pill me-2" placeholder="Search for Plant...">
-            <button type="submit" class="btn btn-success rounded-pill">Search</button>
-        </form>
+        <div class="container mt-4">
+            <form method="get" action="{% url 'plants:plant_search_view' %}" class="d-flex justify-content-center align-items-center">
+                <div class="input-group" style="max-width: 400px;">
+                    <input type="text" name="search" class="form-control" placeholder="Search For Plant..." aria-label="Search" aria-describedby="search-button">
+                    <button class="btn btn-dark" type="submit" id="search-button">Search</button>
+                </div>
+            </form>
+        </div>        
     </div>
 </section>
 <section class="plants-section my-5"> 

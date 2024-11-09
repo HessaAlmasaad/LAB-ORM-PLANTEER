@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .models import Plant, Country
+from django.db.models import Q
+
 # Validation
 from .forms import PlantForm
 # Bonus
@@ -33,10 +35,9 @@ def plant_detail_view(request, plant_id):
     except Http404:
         return render(request, 'plants/404.html', status=404)
     
-    # Fetch related plants based on the same category, excluding the current plant
     related_plants = Plant.objects.filter(category=plant.category).exclude(id=plant.id)[:4]  
     
-    print(related_plants)  # Debugging output to check the queryset
+    print(related_plants) 
     
     return render(request, 'plants/plant_detail.html', {
         "plant": plant,
@@ -63,7 +64,7 @@ def plant_update_view(request: HttpRequest, plant_id: int):
 
         return redirect("plants:plant_detail_view", plant_id=plant_id)
 
-    countries = Country.objects.all()  # Assuming you have a Country model to list all options
+    countries = Country.objects.all()  
     return render(request, "plants/plant_update.html", {"plant": plant, "countries": countries})
 
 
@@ -91,7 +92,6 @@ def all_plants_view(request):
 
     plant_list = plant_list.order_by('name')
 
-    # Get unique categories for the dropdown
     categories = Plant.objects.values_list('category', flat=True).distinct()
 
     # Pagination
@@ -112,17 +112,25 @@ def all_plants_view(request):
     })
 
 # plant_search_view
+def plant_search_view(request: HttpRequest):
+    # Ensure the 'search_query' is initialized properly
+    search_query = request.GET.get("search", "").strip()
+    plants = []
 
+    if search_query and len(search_query) >= 3:
+        plants = Plant.objects.filter(
+            Q(name__icontains=search_query) | Q(category__icontains=search_query)
+        ).distinct()
 
+        order_by = request.GET.get("order_by", "")
+        if order_by == "category":
+            plants = plants.order_by("category")
+        elif order_by == "created_at":
+            plants = plants.order_by("created_at")
 
-
-
-
-
-
-
-
-
-
-
+    return render(request, "plants/search_plants.html", {
+        "plants": plants,
+        "search_query": search_query,
+        "order_by": request.GET.get("order_by", ""),
+    })
 
