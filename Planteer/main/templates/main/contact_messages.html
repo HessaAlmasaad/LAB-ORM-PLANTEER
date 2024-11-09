@@ -2,7 +2,30 @@
 {% load static %}
 {% block title %}Contact Messages | Planteer{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
-
-<h1>hhh</h1>
+<div class="container mt-4">
+    <h2>Messages from Users</h2>
+    <div class="row">
+        {% for contact in contacts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="material-icons mr-2">account_circle</i>
+                            <div>
+                                <h5 class="card-title">{{ contact.first_name }} {{ contact.last_name }}</h5>
+                                <p class="card-text"><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+                            </div>
+                        </div>
+                        <p class="card-text">{{ contact.message }}</p>
+                        <!-- Display created_at date -->
+                        <p class="text-muted small">Submitted on: {{ contact.created_at|date:"F j, Y, g:i a" }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No messages found.</p>
+        {% endfor %}
+    </div>
+</div>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}

@@ -2,7 +2,34 @@
 {% load static %}
 {% block title %}Contact Us | Planteer{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
-
-<h1>hhh</h1>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Contact Us</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" action="{% url 'main:contact_view' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First name</label>
+                    <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Jane" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last name</label>
+                    <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Smitherton" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="email@janesfakedomain.net" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Your message</label>
+                    <textarea class="form-control" id="message" name="message" rows="3" placeholder="Enter your question or message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark w-100">Submit</button>
+            </form>            
+        </div>
+        <div class="col-md-3 d-none d-md-block">
+            <img src="{% static 'images/contact.jpg' %}" alt="Contact" class="img-fluid rounded">
+        </div>
+    </div>
+</div>
 {% endblock %}
