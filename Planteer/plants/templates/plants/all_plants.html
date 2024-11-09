@@ -5,6 +5,32 @@
 
 <h2 class="mb-4 text-center">All Plants</h2>
 
+<!-- Filtering Form -->
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <label for="category" class="form-label">Filter by Category</label>
+            <select name="category" id="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == request.GET.category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label for="is_edible" class="form-label">Filter by Edibility</label>
+            <select name="is_edible" id="is_edible" class="form-select">
+                <option value="">All</option>
+                <option value="true" {% if request.GET.is_edible == "true" %}selected{% endif %}>Edible</option>
+                <option value="false" {% if request.GET.is_edible == "false" %}selected{% endif %}>Not Edible</option>
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+    </div>
+</form>
+
 <div class="row mt-5 row-cols-1 row-cols-md-3 g-4">
     {% for plant in page_obj %}
         <div class="col">

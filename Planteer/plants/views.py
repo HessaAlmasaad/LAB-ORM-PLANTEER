@@ -76,7 +76,6 @@ def custom_404_view(request, exception):
     return render(request, "posts/404.html", status=404)
 
 def all_plants_view(request):
-    # Get filter parameters from request
     category_filter = request.GET.get('category')
     is_edible_filter = request.GET.get('is_edible')
 
@@ -85,16 +84,24 @@ def all_plants_view(request):
     if category_filter:
         plant_list = plant_list.filter(category=category_filter)
     if is_edible_filter:
-        # Convert is_edible_filter to boolean (expected input "true" or "false")
         is_edible_bool = is_edible_filter.lower() == 'true'
         plant_list = plant_list.filter(is_edible=is_edible_bool)
 
-    plant_list = plant_list.order_by('name') 
+    plant_list = plant_list.order_by('name')
+
+    # Get unique categories for the dropdown
+    categories = Plant.objects.values_list('category', flat=True).distinct()
 
     # Pagination
-    paginator = Paginator(plant_list, 10)  # Show 10 plants per page
+    paginator = Paginator(plant_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    return render(request, 'plants/all_plants.html', {
+        "page_obj": page_obj,
+        "categories": categories,
+    })
+
 
     return render(request, "plants/all_plants.html", {
         'page_obj': page_obj,
