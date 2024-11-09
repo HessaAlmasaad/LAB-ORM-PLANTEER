@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .models import Plant, Country
+# Validation
+from .forms import PlantForm
 # Bonus
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
@@ -10,28 +12,21 @@ from django.core.paginator import Paginator
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-def create_plant_view(request: HttpRequest) -> HttpResponse:
+def create_plant_view(request):
     if request.method == "POST":
-        new_plant = Plant(
-            name=request.POST.get("name"),
-            about=request.POST.get("about"),
-            used_for=request.POST.get("used_for"),
-            image=request.FILES["image"], 
-            category=request.POST.get("category"),
-            is_edible=True if request.POST.get("is_edible") == "on" else False,
-            
-        ) 
-        new_plant.save()
-        
-        native_to_ids = request.POST.getlist("native_to")
-        new_plant.native_to.set(Country.objects.filter(id__in=native_to_ids))
-        
-        return redirect("main:index_view")  
-    
-    countries = Country.objects.all()
-    print(countries)
-    return render(request, "plants/create.html", {"countries": countries})
+        plant_form = PlantForm(request.POST, request.FILES)
+        if plant_form.is_valid():
+            plant_form.save()
+            return redirect('main:index_view')
+    else:
+        plant_form = PlantForm()
 
+    countries = Country.objects.all()  
+    return render(request, 'plants/create.html', {
+        'plant_form': plant_form,
+        'countries': countries
+    })
+    
 def plant_detail_view(request, plant_id):
     try:
         plant = get_object_or_404(Plant, id=plant_id)

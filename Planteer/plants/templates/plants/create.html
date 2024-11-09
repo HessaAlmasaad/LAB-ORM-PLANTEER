@@ -9,7 +9,7 @@
     <div class="col-md-6 slide-in-left">
         <form class="d-flex flex-column gap-3" action="{% url 'plants:create_plant_view' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="text" placeholder="Name" name="name" class="form-control" required />
+            <input type="text" placeholder="Name" name="name" class="form-control" required minlength="5" maxlength="512" />
             <textarea placeholder="About" name="about" class="form-control" rows="4" required></textarea>
             <input type="text" placeholder="Used For" name="used_for" class="form-control" required />
             <!-- Category Dropdown Field -->
@@ -22,14 +22,14 @@
                 <option value="herbs">Herbs</option>
             </select>
             <label for="native_to">Native To:</label>
-            <select name="native_to" id="native_to" class="form-control select2-multi" multiple>
+            <select name="native_to" id="native_to" class="form-control select2-multi" required multiple>
                 {% for country in countries %}
                     <option value="{{ country.id }}">{{ country.name }}</option>
                 {% empty %}
                     <option>No countries available</option>
                 {% endfor %}
             </select>
-            <input type="file" name="image" class="form-control"/>
+            <input type="file" name="image" class="form-control" required accept="image/*"/>
             <div class="form-check">
                 <label>
                     <input type="checkbox" name="is_edible" id="isEdibleCheckbox" {% if new_plant.is_edible %}checked{% endif %} onchange="toggleEdibleText()">
